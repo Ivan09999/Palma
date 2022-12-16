@@ -1,0 +1,196 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+typedef struct Node* curr;
+typedef struct Node {
+	int x;
+	curr left;
+	curr right;
+}Node;
+
+curr createNewNode(int value);
+curr insertNode1(curr curr1, curr newNode);
+void printPreOrder(curr p);
+void printInOrder(curr p);
+void printPostOrder(curr p);
+curr delete(curr p, int br);
+curr findMin(curr p);
+curr findMax(curr p);
+
+curr findValue(curr p, int value);
+int main() {
+	curr root = NULL;
+	int choice;
+	int value;
+	/*while (true) {
+		printf("\n1 = insert Node\n");
+		printf("2 = printPreOrder\n");
+		printf("3 = printInOrder\n");
+		printf("4 = printPostOrder\n");
+		printf("5 = findMin\n");
+		printf("6 = findMax\n");
+
+		printf("7 = deleteNode\n");
+
+		printf("0 = exit\n");
+		printf("Enter Choice: ");
+		scanf(" %d", &choice);
+
+		switch (choice) {
+		case 1:
+			printf("Enter value u want to add to tree\n");
+			scanf(" %d", &value);
+			root = insertNode1(root, createNewNode(value));
+			break;
+		case 2:
+			printf("preorder ");
+			printPreOrder(root);
+			break;
+		case 3:
+			printf("\n inorder ");
+			printInOrder(root);
+			break;
+		case 4:
+			printf("\npostorder");
+			printPostOrder(root);
+			break;
+		case 5:
+			printf("Min = %d", findMin(root)->x);
+			break;
+
+			case 6:
+				printf("Max = %d", findMax(root)->x);
+				break;
+
+			case 7:
+				printf("enter value to remove\n");
+				scanf("%d", &value);
+				delete(root, value);
+		default:
+			printf("Wrong input\n");
+			continue;
+
+		case 0:
+			exit(0);
+		}
+	}*/
+
+	root = insertNode1(root, createNewNode(2));
+	root = insertNode1(root, createNewNode(3));
+	root = insertNode1(root, createNewNode(4));
+	root = insertNode1(root, createNewNode(5));
+
+	curr findvalue = findValue(root, 2);
+	printf("found = %d", findvalue->x);
+	return 0;
+
+}
+
+curr createNewNode(int value) {
+	curr newNode = malloc(sizeof(Node));
+	if (newNode == NULL) {
+		printf("New Node not allocated");
+		return NULL;
+	}
+	newNode->x = value;
+	newNode->right = NULL;
+	newNode->left = NULL;
+
+	return newNode;
+}
+curr insertNode1(curr curr1, curr newNode) {
+	if (curr1 == NULL) {
+		return newNode;
+	}
+	else if (newNode->x < curr1->x) {
+		curr1->left = insertNode1(curr1->left, newNode);
+	}
+	else if (newNode->x > curr1->x) {
+		curr1->right = insertNode1(curr1->right, newNode);
+	}
+	else {
+		free(newNode);
+	}
+	return curr1;
+}
+void printPreOrder(curr p) {
+	if (p == NULL) return;
+	printf("%d ", p->x);
+	printPreOrder(p->left);
+	printPreOrder(p->right);
+}
+void printInOrder(curr p) {
+	if (p == NULL) return;
+	printPreOrder(p->left);
+	printf("%d ", p->x);
+	printPreOrder(p->right);
+}
+void printPostOrder(curr p) {
+	if (p == NULL) return;
+	printPostOrder(p->left);
+	printPostOrder(p->right);
+	printf("%d ", p->x);
+}
+curr delete(curr p, int br) {
+	if (p == NULL)
+		return NULL;
+
+		if (br > p->x)
+			p->right = delete(p->right, br);
+
+		else if (br < p->x)
+			p->left = delete(p->left, br);
+
+		else {
+			if (p->left) {
+				curr tmp = findMax(p->left);
+				p->x = tmp->x;
+				p->left = delete(p->left, tmp->x);
+			}
+			else if (p->right) {
+				curr tmp = findMin(p->right);
+				p->x = tmp->x;
+				p->right = delete(p->right, tmp->x);
+			}
+			else {
+				free(p);
+				return NULL;
+			}
+		}
+
+	return p;
+}
+curr findMin(curr p) {
+	while (p->left != NULL) {
+		p = p->left;
+	}
+	return p;
+}
+curr findMax(curr p) {
+	while (p->right != NULL) {
+		p = p->right;
+	}
+	return p;
+}
+
+curr findValue(curr p, int value) {
+	while (p != NULL) {
+		if (value < p->x)
+			p = p->left;
+		else if (value > p->x)
+			p = p->right;
+		else break;
+	}
+	return p;
+}
+
+int printlevelOrder(curr p) {
+	if (p == NULL) return 0;
+
+
+
+
+
+}
