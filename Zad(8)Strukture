@@ -34,58 +34,7 @@ int main() {
 	root->right = NULL;
 	int choice;
 	int value;
-	/*while (true) {
-		printf("\n1 = insert Node\n");
-		printf("2 = printPreOrder\n");
-		printf("3 = printInOrder\n");
-		printf("4 = printPostOrder\n");
-		printf("5 = findMin\n");
-		printf("6 = findMax\n");
-
-		printf("7 = deleteNode\n");
-
-		printf("0 = exit\n");
-		printf("Enter Choice: ");
-		scanf(" %d", &choice);
-
-		switch (choice) {
-		case 1:
-			printf("Enter value u want to add to tree\n");
-			scanf(" %d", &value);
-			root = insertNode1(root, createNewNode(value));
-			break;
-		case 2:
-			printf("preorder ");
-			printPreOrder(root);
-			break;
-		case 3:
-			printf("\n inorder ");
-			printInOrder(root);
-			break;
-		case 4:
-			printf("\npostorder");
-			printPostOrder(root);
-			break;
-		case 5:
-			printf("Min = %d", findMin(root)->x);
-			break;
-
-			case 6:
-				printf("Max = %d", findMax(root)->x);
-				break;
-
-			case 7:
-				printf("enter value to remove\n");
-				scanf("%d", &value);
-				delete(root, value);
-		default:
-			printf("Wrong input\n");
-			continue;
-
-		case 0:
-			exit(0);
-		}
-	}*/
+	
 	NodeS root1;
 	root1.next = NULL;
 
