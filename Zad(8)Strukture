@@ -10,6 +10,11 @@ typedef struct Node {
 	curr right;
 }Node;
 
+typedef struct NodeS {
+	curr element;
+	struct NodeS* next;
+}NodeS;
+
 curr createNewNode(int value);
 curr insertNode1(curr curr1, curr newNode);
 void printPreOrder(curr p);
@@ -18,10 +23,15 @@ void printPostOrder(curr p);
 curr delete(curr p, int br);
 curr findMin(curr p);
 curr findMax(curr p);
-
 curr findValue(curr p, int value);
+void printLevelOfNode(Node* rootStablo, NodeS* red);
+
+
+void pushS(curr root, NodeS* redRoot);
 int main() {
-	curr root = NULL;
+	curr root = malloc(sizeof(Node));
+	root->left = NULL;
+	root->right = NULL;
 	int choice;
 	int value;
 	/*while (true) {
@@ -76,16 +86,21 @@ int main() {
 			exit(0);
 		}
 	}*/
+	NodeS root1;
+	root1.next = NULL;
 
 	root = insertNode1(root, createNewNode(2));
 	root = insertNode1(root, createNewNode(3));
 	root = insertNode1(root, createNewNode(4));
-	root = insertNode1(root, createNewNode(5));
+	root = insertNode1(root, createNewNode(513));
+	root = insertNode1(root, createNewNode(55));
+	root = insertNode1(root, createNewNode(455));
+	root = insertNode1(root, createNewNode(51));
 
-	curr findvalue = findValue(root, 2);
-	printf("found = %d", findvalue->x);
+	//printInOrder(&(root));
+	printLevelOfNode(&root, &root1);
+
 	return 0;
-
 }
 
 curr createNewNode(int value) {
@@ -186,11 +201,41 @@ curr findValue(curr p, int value) {
 	return p;
 }
 
-int printlevelOrder(curr p) {
-	if (p == NULL) return 0;
+void pushS(Node* rootStablo, NodeS* rootStack) {
+	NodeS* newNode = malloc(sizeof(NodeS));
+	if (newNode == NULL) {
+		printf("Error\n");
+	}
+	while (rootStack->next != NULL) {
+		rootStack = rootStack->next;
+	}
+	rootStack->next = newNode;
+	newNode->element = rootStablo;
+	newNode->next = NULL;
 
+}
+int popS(NodeS* rootStack){
+	if (rootStack->next == NULL) {
+		return NULL;
+	}
+	else {
+		NodeS* curr = rootStack->next;
+		rootStack->next = rootStack->next->next;
+		return (curr->element);
+	}
+}
 
+void printLevelOfNode( Node* rootStablo, NodeS* red) {
 
+	while (rootStablo != NULL) {
+		printf("%d ", rootStablo->x);
 
-
+		if (rootStablo->left != NULL) {
+			pushS(rootStablo->left, red);
+		}
+		if (rootStablo->right != NULL) {
+			pushS(rootStablo->right, red);
+		}
+		rootStablo = popS(red);
+	}
 }
