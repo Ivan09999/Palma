@@ -1,0 +1,218 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <malloc.h>
+typedef struct Node* Nodecurr;
+typedef struct red* redcurr;
+typedef struct Node{
+	int x;
+	struct Node* right;
+	struct Node* left;
+}Node;
+
+typedef struct red {
+	Nodecurr nodePointer;
+	redcurr next;
+}red;
+void levelOrderPrint(red* redRoot, Node* rootTree);
+void insertEnd(red* redRoot, Node* rootTree);
+red* newRed(Node* rootTree);
+Node* newNodeF(int x1);
+int insertNode(Node** root, int x);
+int insertNode1(Node** root, int x);
+
+void printInOrder(Node* p);
+void printPreOrder(Node* p);
+Node* popStart(red* redRoot);
+
+void LevelOrder(red* redRoot, Node* rootTree, Node** rootNewTree);
+int main() {
+	Node* root = NULL;
+	Node* root1 = NULL;
+	red redRoot;
+	redRoot.next = NULL;
+
+	insertNode(&root, 2);
+	insertNode(&root, 5);
+	insertNode(&root, 7);
+	insertNode(&root, 8);
+	insertNode(&root, 11);
+	insertNode(&root, 1);
+	insertNode(&root, 4);
+	insertNode(&root, 2);
+	insertNode(&root, 3);
+	insertNode(&root, 7);
+	printf("Level first\n");
+	levelOrderPrint(&redRoot, root);
+	printf("\n preorder..\n");
+
+	printPreOrder(root);
+
+
+	printf("\nFilling reverse tree...\n");
+	LevelOrder(&redRoot, root, &root1);
+	printf("\n level order..\n");
+
+	levelOrderPrint(&redRoot, root1);	printf("\nFilling reverse tree...\n");
+
+	printPreOrder(root1);
+	return 0;
+}
+void insertEnd(redcurr redRoot, Nodecurr rootTree) {
+	redcurr curr = redRoot;
+	while (curr->next != NULL) {
+		curr = curr->next;
+	}
+	curr->next = newRed(rootTree);
+}
+red* newRed(Node* rootTree) {
+	red* newRed = malloc(sizeof(red));
+	if (newRed == NULL) {
+		printf("error");
+		return NULL;
+	}
+	newRed->next = NULL;
+	newRed->nodePointer = rootTree;
+
+	return newRed;
+}
+Node* newNodeF(int x1) {
+	Node* newNode = malloc(sizeof(Node));
+	if (newNode == NULL) {
+		return NULL;
+	}
+	newNode->x = x1;
+	newNode->left = NULL;
+	newNode->right = NULL;
+
+	return newNode;
+}
+int insertNode(Node** root, int x) {
+	if (*root == NULL) { // Unos ako je root null odnosno prazno stablo
+		*root = malloc(sizeof(Node));
+
+		if (*root == NULL) {
+			printf("Root not allocated properly\n");
+			return -1;
+		}
+		(*root)->x = x;
+		(*root)->left = NULL;
+		(*root)->right = NULL;
+		return 0;
+	}
+	Node* curr = *root;
+
+	while (curr->right != NULL || curr->left != NULL) {
+		if (x < curr->x && curr->left != NULL) {
+			curr = curr->left;
+		}
+		else if (x > curr->x && curr->right != NULL) {
+			curr = curr->right;
+		}
+		else if (x == curr->x && curr->right != NULL) {
+			curr = curr->right;
+		}
+		else break;
+	}
+
+	if (x < curr->x) {
+		curr->left = newNodeF(x);
+	}
+	else if (x > curr->x) {
+		curr->right = newNodeF(x);
+	}
+
+	return 0;
+}
+void printInOrder(Node* p) {
+	if (p == NULL) return;
+	printInOrder(p->left);
+	printf("%d ", p->x);
+	printInOrder(p->right);
+}
+void printPreOrder(Node* p) {
+	if (p == NULL) return;
+	printf("%d ", p->x);
+	printPreOrder(p->left);
+	printPreOrder(p->right);
+}
+Node* popStart(red* redRoot) {
+	
+	if (redRoot->next == NULL) {
+		return NULL;
+	}
+	else {
+		Node* curr = redRoot->next->nodePointer;
+		redRoot->next = redRoot->next->next;
+		return curr;
+	}
+}
+void LevelOrder(red* redRoot, Node* rootTree, Node** rootNewTree) {
+	Node* curr = rootTree;
+
+	while (curr != NULL) {
+		insertNode1(rootNewTree, curr->x);
+		//printf("%d ", curr->x);
+		if (curr->right != NULL) {
+			insertEnd(redRoot, curr->right);
+		}
+		if (curr->left != NULL) {
+			insertEnd(redRoot, curr->left);
+		}
+		curr = popStart(redRoot);
+	}
+}
+int insertNode1(Node** root, int x) {
+	if (*root == NULL) { // Unos ako je root null odnosno prazno stablo
+		*root = malloc(sizeof(Node));
+
+		if (*root == NULL) {
+			printf("Root not allocated properly\n");
+			return -1;
+		}
+		(*root)->x = x;
+		(*root)->left = NULL;
+		(*root)->right = NULL;
+		return 0;
+	}
+	Node* curr = *root;
+
+	while (curr->right != NULL || curr->left != NULL) {
+		if (x > curr->x && curr->left != NULL) {
+			curr = curr->left;
+		}
+		else if (x < curr->x && curr->right != NULL) {
+			curr = curr->right;
+		}
+		else if (x == curr->x && curr->left != NULL) {
+			curr = curr->left;
+		}
+		else break;
+	}
+
+	if (x > curr->x) {
+		curr->left = newNodeF(x);
+	}
+	else if (x < curr->x) {
+		curr->right = newNodeF(x);
+	}
+
+	return 0;
+}
+void levelOrderPrint(red* redRoot, Node* rootTree) {
+	Node* curr = rootTree;
+
+	while (curr != NULL) {
+		//insertNode1(rootNewTree, curr->x);
+		printf("%d ", curr->x);
+		
+		if (curr->left != NULL) {
+			insertEnd(redRoot, curr->left);
+		}
+		if (curr->right != NULL) {
+			insertEnd(redRoot, curr->right);
+		}
+		curr = popStart(redRoot);
+	}
+}
