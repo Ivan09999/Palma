@@ -17,10 +17,9 @@ typedef struct red {
 	redcurr next;
 }red;
 
-int RAND(int min, int max) {
-	return( (rand() % (max - min + 1)) + min);
-}
-
+void treeDeallocation(Node* node);
+int RAND(int min, int max);
+void redDeallocation(red* root);
 void fileInOrder(Node* p, FILE* file);
 int writeIntoFile(Node* root);
 int sumaLevel(Node* rootTree);
@@ -65,18 +64,29 @@ int main() {
 	LevelOrder(&redRoot, root, &root1);
 	printf("\n level order..\n");
 
-	levelOrderPrint(&redRoot, root1);	
+	levelOrderPrint(&redRoot, root1);
 	printf("\nFilling suma tree...\n");
-	
+
 	levelOrderReplace(&redRootSum, root1);
 	levelOrderPrint(&redRoot, root1);
-
-	writeIntoFile(root);
+	
+	redDeallocation(&redRoot);
+	redDeallocation(&redRootSum);
+	/*writeIntoFile(root);
 	writeIntoFile(root1);
-
+*/
+	treeDeallocation(root);
+	printf("\n");
+	treeDeallocation(root1);
 
 	return 0;
 }
+
+
+
+int RAND(int min, int max) {
+	return((rand() % (max - min + 1)) + min);
+	}
 void insertEnd(redcurr redRoot, Nodecurr rootTree) {
 	redcurr curr = redRoot;
 	while (curr->next != NULL) {
@@ -270,6 +280,7 @@ int sumaLevel(Node* rootTree) {
 		else
 			suma = suma + curr->x;
 	}
+	redDeallocation(&redRoot);
 	return suma;
 }
 int writeIntoFile(Node* p) {
@@ -291,4 +302,24 @@ void fileInOrder(Node* p, FILE* file) {
 	fileInOrder(p->left, file);
 	fprintf(file, "%d ", p->x);
 	fileInOrder(p->right, file);
+}
+void redDeallocation(red* root) {
+	red* curr = root->next;
+	root = root->next;
+
+	while (curr != NULL) {
+		curr = root;
+		root = root->next;
+		free(root);
+	}
+
+}
+void treeDeallocation(Node* node) {
+	if (node == NULL) return;
+
+	treeDeallocation(node->left);
+	treeDeallocation(node->right);
+
+	printf("\n Deleting node: %d", node->x);
+	free(node);
 }
