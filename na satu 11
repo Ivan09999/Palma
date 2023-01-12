@@ -1,0 +1,95 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <malloc.h>
+#include <time.h>
+
+typedef struct Tree* Treecurr;
+typedef struct Lista* Listacurr;
+
+typedef struct Tree {
+	char city[100];
+	struct Tree* right;
+	struct Tree* left;
+}Tree;
+
+typedef struct Lista {
+	char drzava[100];
+	Treecurr treePointer;
+	Listacurr next;
+}Lista;
+
+
+
+int main() {
+	Lista root;
+	root.next = NULL;
+	char bufferDrzava[100] = { 0 };
+	char bufferDrzFile[100] = { 0 };
+
+	FILE* file = fopen("drzave.txt", "r");
+	if (file == NULL) {
+		printf("File not opened\n");
+		return -1;
+	}
+
+	
+
+	while (fscanf(file, "%s %s", bufferDrzava, bufferDrzFile) >= 2) {
+		insertTree()
+
+			Tree* rootTree = malloc(sizeof(Lista));
+		
+
+		insertSorted(bufferDrzava, &root, bufferDrzFile, rootTree);
+
+	}
+	return 0;
+}
+int insertStart(Lista* root, char* name) {
+	Lista* newNode = (Lista*)malloc(sizeof(Lista));
+	if (newNode == NULL) {
+		printf("Error");
+		return -1;
+	}
+	strcpy(newNode->drzava  ,name);
+
+	newNode->next = root->next;
+	root->next = newNode;
+}
+
+int insertSorted(char* name, Lista* root, char *Drzave, Tree* rootTree ) {
+	
+	FILE* f = fopen("Drzave", "r");
+	Tree 
+	if(f==NULL)
+	{
+		printf("file nije otovoren");
+	}
+
+
+
+	while((fscanf(f, "%s %d", insertStablo(rootTree, newtree(grad, stanovnici) >= 2))
+	
+
+		newNode->treePointer = insertStablo(rootTree, newtree(grad, stanovnici)
+
+
+	if (root->next == NULL) {
+		insertStart(root, name);
+		return 0;
+	}
+
+
+	Lista* curr = root;
+	while (curr != NULL) {
+		if (strcmp(name, curr->next->drzava)){
+			break;
+		}
+		curr = curr->next;
+	}
+	insertAfter();
+
+	return 0;
+}
