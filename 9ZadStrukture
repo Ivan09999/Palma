@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <time.h>
+
 typedef struct Node* Nodecurr;
 typedef struct red* redcurr;
 typedef struct Node{
@@ -11,7 +12,6 @@ typedef struct Node{
 	struct Node* right;
 	struct Node* left;
 }Node;
-
 typedef struct red {
 	Nodecurr nodePointer;
 	redcurr next;
@@ -19,13 +19,13 @@ typedef struct red {
 
 void treeDeallocation(Node* node);
 int RAND(int min, int max);
-void redDeallocation(red* root);
+int redDeallocation(red* root);
 void fileInOrder(Node* p, FILE* file);
 int writeIntoFile(Node* root);
 int sumaLevel(Node* rootTree);
-void levelOrderReplace(red* redRoot, Node* rootTree);
-void levelOrderPrint(red* redRoot, Node* rootTree);
-void insertEnd(red* redRoot, Node* rootTree);
+int levelOrderReplace(red* redRoot, Node* rootTree);
+int levelOrderPrint(red* redRoot, Node* rootTree);
+int insertEnd(red* redRoot, Node* rootTree);
 red* newRed(Node* rootTree);
 Node* newNodeF(int x1);
 int insertNode(Node** root, int x);
@@ -33,8 +33,8 @@ int insertNode1(Node** root, int x);
 void printInOrder(Node* p);
 void printPreOrder(Node* p);
 Node* popStart(red* redRoot);
-
-void LevelOrder(red* redRoot, Node* rootTree, Node** rootNewTree);
+int LevelOrder(red* redRoot, Node* rootTree, Node** rootNewTree);
+ 
 int main() {
 	srand(time(0));
 
@@ -72,9 +72,9 @@ int main() {
 	
 	redDeallocation(&redRoot);
 	redDeallocation(&redRootSum);
-	/*writeIntoFile(root);
+	writeIntoFile(root);
 	writeIntoFile(root1);
-*/
+
 	treeDeallocation(root);
 	printf("\n");
 	treeDeallocation(root1);
@@ -82,17 +82,16 @@ int main() {
 	return 0;
 }
 
-
-
 int RAND(int min, int max) {
 	return((rand() % (max - min + 1)) + min);
 	}
-void insertEnd(redcurr redRoot, Nodecurr rootTree) {
+int insertEnd(redcurr redRoot, Nodecurr rootTree) {
 	redcurr curr = redRoot;
-	while (curr->next != NULL) {
+	while (curr->next != NULL) 
 		curr = curr->next;
-	}
+	
 	curr->next = newRed(rootTree);
+	return 0;
 }
 red* newRed(Node* rootTree) {
 	red* newRed = malloc(sizeof(red));
@@ -108,6 +107,7 @@ red* newRed(Node* rootTree) {
 Node* newNodeF(int x1) {
 	Node* newNode = malloc(sizeof(Node));
 	if (newNode == NULL) {
+		printf("Error newNode is NULL\n");
 		return NULL;
 	}
 	newNode->x = x1;
@@ -175,12 +175,11 @@ Node* popStart(red* redRoot) {
 		return curr;
 	}
 }
-void LevelOrder(red* redRoot, Node* rootTree, Node** rootNewTree) {
+int LevelOrder(red* redRoot, Node* rootTree, Node** rootNewTree) {
 	Node* curr = rootTree;
 
 	while (curr != NULL) {
 		insertNode1(rootNewTree, curr->x);
-		//printf("%d ", curr->x);
 		if (curr->right != NULL) {
 			insertEnd(redRoot, curr->right);
 		}
@@ -189,6 +188,7 @@ void LevelOrder(red* redRoot, Node* rootTree, Node** rootNewTree) {
 		}
 		curr = popStart(redRoot);
 	}
+	return 0;
 }
 int insertNode1(Node** root, int x) {
 	if (*root == NULL) { // Unos ako je root null odnosno prazno stablo
@@ -217,7 +217,6 @@ int insertNode1(Node** root, int x) {
 		}
 		else break;
 	}
-
 	if (x > curr->x) {
 		curr->left = newNodeF(x);
 	}
@@ -227,7 +226,7 @@ int insertNode1(Node** root, int x) {
 
 	return 0;
 }
-void levelOrderPrint(red* redRoot, Node* rootTree) {
+int levelOrderPrint(red* redRoot, Node* rootTree) {
 	Node* curr = rootTree;
 
 	while (curr != NULL) {
@@ -241,8 +240,9 @@ void levelOrderPrint(red* redRoot, Node* rootTree) {
 		}
 		curr = popStart(redRoot);
 	}
+	return 0;
 }
-void levelOrderReplace (red* redRoot, Node* rootTree) {
+int levelOrderReplace (red* redRoot, Node* rootTree) {
 	Node* curr = rootTree;
 
 	while (curr != NULL) {
@@ -256,13 +256,12 @@ void levelOrderReplace (red* redRoot, Node* rootTree) {
 		}
 		curr = popStart(redRoot);
 	}
+	return 0;
 }
 int sumaLevel(Node* rootTree) {
 	int suma = 0;
-
 	red redRoot;
 	redRoot.next = NULL;
-
 	Node* curr = rootTree;
 
 	while (curr != NULL) {
@@ -303,7 +302,7 @@ void fileInOrder(Node* p, FILE* file) {
 	fprintf(file, "%d ", p->x);
 	fileInOrder(p->right, file);
 }
-void redDeallocation(red* root) {
+int redDeallocation(red* root) {
 	red* curr = root->next;
 	root = root->next;
 
@@ -312,7 +311,7 @@ void redDeallocation(red* root) {
 		root = root->next;
 		free(root);
 	}
-
+	return 0;
 }
 void treeDeallocation(Node* node) {
 	if (node == NULL) return;
