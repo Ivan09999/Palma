@@ -29,9 +29,10 @@ int insertSorted(Drzava** rootDrz, char* imeDrzav, char* bufferFileDrzave);
 int PrintDrzave(Drzava* root);
 int readDrzave(Drzava* rootDrz);
 Drzava* newDrzavaF(char* drzavaIme);
+
 Grad* newGradF(char* gradIme, int brojSt);
 int insertStart(Drzava* root, char* imeDrzave);
-int insertAfter(Drzava* root, char* insertAfterDrzava, char* imeDrzave);
+int insertAfter(Drzava* root, char* insertAfterDrzava, char* imeDrzave, Drzava* newDrzava);
 void printGradove(Grad* grad);
 
 
@@ -62,13 +63,11 @@ int readDrzave(Drzava** rootDrz) {
 	}
 	fclose(file);
 }
-int insertSorted(Drzava** rootDrz, char* imeDrzav, char* bufferFileDrzave) {
+int insertSorted(Drzava** rootDrz, char* imeDrzave, char* bufferFileDrzave) {
 	Drzava* curr = *rootDrz;
-	Drzava* newDrzava = newDrzavaF(imeDrzav, treePointer);
+	Drzava* newDrzava = newDrzavaF(imeDrzave);
 
-	Grad* pointer = readGradovi(bufferFileDrzave);
-	newDrzava->TreeRoot = pointer;
-
+	newDrzava->TreeRoot = readGradovi(bufferFileDrzave);
 
 	while (curr->next != NULL) {
 		if (strcmp(newDrzava->drzavaIme, curr->next->drzavaIme) < 0){
@@ -76,7 +75,7 @@ int insertSorted(Drzava** rootDrz, char* imeDrzav, char* bufferFileDrzave) {
 		}
 		curr = curr->next;
 	}
-	insertAfter(*rootDrz, curr->drzavaIme, newDrzava->drzavaIme);
+	insertAfter(*rootDrz, curr->drzavaIme, newDrzava->drzavaIme, newDrzava);
 	return 0;
 }
 Grad* readGradovi(char* bufferFileDrzave) {
@@ -94,10 +93,7 @@ Grad* readGradovi(char* bufferFileDrzave) {
 	while (fscanf(file, "%s %d", imeGrada, &brojStanovnikagrada) >= 2) {
 		insertTree(&gradRoot, imeGrada, brojStanovnikagrada);
 	}
-//	printGradove(gradRoot);
-	printf("%s = gradRoot\n", gradRoot->left->gradIme);
-	gradPointer = gradRoot;
-	return gradPointer;
+	return gradRoot;
 }
 int gradCompare(Grad* grad1, Grad* grad2) {
 	int result = 0;
@@ -134,13 +130,13 @@ int insertTree(Grad** gradRoot, char* imeGrada,int brojStanovnikagrada) {
 	return 0;
 }
 
-Drzava* newDrzavaF(char* drzavaIme, Grad* treePointer) {
+Drzava* newDrzavaF(char* drzavaIme)
+{
 	Drzava* newdrzava = malloc(sizeof(Drzava));
 	if (newdrzava == NULL) {
 		printf("NewDrzava not allocated properly\n");
 		return NULL;
 	}
-	newdrzava->TreeRoot = treePointer;
 	strcpy(newdrzava->drzavaIme, drzavaIme);
 	newdrzava->next = NULL;
 	newdrzava->TreeRoot = NULL;
@@ -169,13 +165,9 @@ int insertStart(Drzava* root, char* imeDrzave) {
 
 	return 0;
 }
-int insertAfter(Drzava* root, char* insertAfterDrzava, char* imeDrzave) {
+int insertAfter(Drzava* root, char* insertAfterDrzava, char* imeDrzave, Drzava* newDrzava) {
 	Drzava* curr = root;
-	Drzava* newDrzava = newDrzavaF(imeDrzave);
-	/*if ((curr->next = NULL) ||( strcpy(curr->next->drzavaIme, insertAfterDrzava) == 0) ) {
-		insertStart(root, imeDrzave);
-		return 0;
-	}*/
+
 	while (curr != NULL) {
 		if (strcmp(curr->drzavaIme, insertAfterDrzava) == 0) {
 			break;
