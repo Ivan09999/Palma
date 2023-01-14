@@ -22,31 +22,47 @@ typedef struct  Grad {
 	int brojStanovnika;
 }Grad;
 
+typedef struct Red {
+	Grad* gradPointer;
+	struct Red* next;
+}Red;
 
+int findCitiesAboveNumber(Grad* rootTree, int upRange);
+//Grad* popRed(Red* root);
+//int insertEndRed(Red* root, Grad* gradPointer1);
+Drzava* findCountry(Drzava* root, char* nameToFind);
 int insertTree(Grad** gradRoot, char* imeGrada, int brojStanovnikagrada);
 Grad* readGradovi(char* bufferFileDrzave);
 int insertSorted(Drzava** rootDrz, char* imeDrzav, char* bufferFileDrzave);
 int PrintDrzave(Drzava* root);
 int readDrzave(Drzava* rootDrz);
 Drzava* newDrzavaF(char* drzavaIme);
-
 Grad* newGradF(char* gradIme, int brojSt);
 int insertStart(Drzava* root, char* imeDrzave);
 int insertAfter(Drzava* root, char* insertAfterDrzava, char* imeDrzave, Drzava* newDrzava);
 void printGradove(Grad* grad);
 
-
 int main() {
+	char drzavaBuff[100] = { 0 };
+	Drzava* drzava1 = NULL;
+	int upRange = 0;
 	Drzava* root = malloc((sizeof(Drzava)));
 	if (root == NULL) {
 		return;
 	}
 	root->next = NULL;
-	readDrzave(&root);
 
+	readDrzave(&root);
 	PrintDrzave(root);
-	
-//	printf("%s ", root->TreeRoot->gradIme);
+
+	printf("Unesite drzavu za koju zelite pretraziti gradove = ");
+
+	//scanf("%s", drzavaBuff);
+	drzava1 = findCountry(root, "BiH");
+	printf("\nUnesite iznad kojega broja stanovnika zelite pretraziti gradove = ");
+	scanf("%d", &upRange);
+	findCitiesAboveNumber(drzava1->TreeRoot, upRange);
+
 	return 0;
 }
 
@@ -129,7 +145,6 @@ int insertTree(Grad** gradRoot, char* imeGrada,int brojStanovnikagrada) {
 	}
 	return 0;
 }
-
 Drzava* newDrzavaF(char* drzavaIme)
 {
 	Drzava* newdrzava = malloc(sizeof(Drzava));
@@ -156,7 +171,6 @@ Grad* newGradF(char* gradIme, int brojSt) {
 	return newGrad;
 
 }
-
 int insertStart(Drzava* root, char* imeDrzave) {
 	Drzava* newDrzava = newDrzavaF(imeDrzave);
 	newDrzava->next = root->next;
@@ -197,4 +211,74 @@ void printGradove(Grad* grad) {
 	 printGradove(grad->left);
 	 printGradove(grad->right);
 
+}
+Drzava* findCountry(Drzava* root, char* nameToFind) {
+	Drzava* curr = root->next;
+
+	while (curr != NULL) {
+		if (strcmp(nameToFind, curr->drzavaIme) == 0) {
+			printf("\nCountry found -> %s", curr->drzavaIme);
+			break;
+		}
+		curr = curr->next;
+	}
+	return curr;
+}
+
+//int insertEndRed(Red* root, Grad* gradPointer1){
+//	Red* curr = root;
+//	while (curr->next != NULL) {
+//		curr = curr->next;
+//	}
+//	Red* newRed = malloc(sizeof(Red));
+//	if (newRed == NULL) {
+//		printf("Not allocated\n");
+//		return -1;
+//	}
+//	newRed->gradPointer = gradPointer1;
+//
+//	newRed->next = curr->next;
+//	curr->next = newRed;
+//
+//	return 0;
+//}
+//Grad* popRed(Red* root) {
+//	if (root->next == NULL) {
+//		return NULL;
+//	}
+//
+//	Red* curr = root->next;
+//	root->next = curr->next;
+//	Grad* currGrad = curr->gradPointer;
+//
+//	free(curr);
+//
+//	return currGrad;
+//}
+
+int findCitiesAboveNumber(Grad* rootTree, int upRange) {
+	Grad* curr = rootTree;
+	Red* rootRed = malloc(sizeof(Red));
+	if (rootRed == NULL) {
+		printf("Not alocated");
+		return -1;
+	}
+	rootRed->next = NULL;
+
+	while (curr != NULL) {
+		if (curr->brojStanovnika < upRange) {
+				curr = curr->right;
+		}
+		else if (curr->brojStanovnika > upRange) {
+			printf("%s == %d\n", curr->gradIme, curr->brojStanovnika);
+
+			printGradove(curr->right);
+			curr = curr->left;
+		}
+		else {
+			printf("%s == %d\n", curr->gradIme, curr->brojStanovnika);
+			printGradove(curr->right);
+			break;
+		}
+	}
 }
